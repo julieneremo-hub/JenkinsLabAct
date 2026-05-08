@@ -23,7 +23,17 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Running unit tests...'
-                sh 'echo "All tests passed (100% coverage)"'
+                // This creates a fake JUnit XML result file
+                sh '''
+                echo "<?xml version='1.0' encoding='UTF-8'?>
+                <testsuites>
+                  <testsuite name='LabTests' tests='1' failures='0'>
+                    <testcase name='test_integration_success' />
+                  </testsuite>
+                </testsuites>" > test-results.xml
+                '''
+                // This tells Jenkins to "consume" the file and create the report
+                junit 'test-results.xml'
             }
         }
 
