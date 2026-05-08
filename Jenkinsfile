@@ -36,9 +36,7 @@ pipeline {
 
         stage('Notifications') {
             steps {
-                echo 'Finalizing and sending email...'
-                // This creates the "Notifications" circle in your map
-                script {
+                catchError(buildResult: 'SUCCESS', stageResult: 'SUCCESS') {
                     mail to: 'julieneremo@gmail.com',
                          subject: "BUILD SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                          body: "Good news! Build ${env.BUILD_URL} completed successfully."
@@ -49,7 +47,7 @@ pipeline {
 
     post {
         failure {
-            echo 'Pipeline failed. Sending alert...'
+            // This is also from your lab act file
             mail to: 'julieneremo@gmail.com',
                  subject: "BUILD FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                  body: "Build ${env.BUILD_URL} has failed. Please check the logs."
